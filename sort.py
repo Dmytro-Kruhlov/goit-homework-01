@@ -1,5 +1,8 @@
 import os
 import shutil
+import sys
+
+
 categories = {
     'jpeg': 'images',
     'png': 'images',
@@ -25,7 +28,7 @@ categories = {
 }
 
 
-def extract_archive(archive_path, destination_folder):
+def extract_archive(archive_path: str, destination_folder: str):
     filename = os.path.basename(archive_path)
     _, extension = os.path.splitext(filename)
 
@@ -46,14 +49,14 @@ def get_extension(filename: str) -> str:
 
 
 def categorize(filename: str) -> str:
-    #filename = 'face.jpeg'
+   
     extension = get_extension(filename)
     category = categories.get(extension, 'unknown')
     return category
 
 
 
-def get_files_from_folder(path):
+def get_files_from_folder(path: str) -> list:
     file_paths = []
 
     files = os.listdir(path)
@@ -99,7 +102,7 @@ def normalize(name: str) -> str:
 
 
 
-def move_files(file_path):
+def move_files(file_path: str):
     file_name = os.path.basename(file_path)
     category = categorize(file_name)
 
@@ -117,7 +120,7 @@ def move_files(file_path):
 
 
 
-def move_archive(file_path):
+def move_archive(file_path: str):
     file_name = os.path.basename(file_path)
     name_without_extansion = os.path.splitext(file_name)[0]
     category = categorize(file_name)
@@ -135,7 +138,7 @@ def move_archive(file_path):
     os.remove(file_path)
 
 
-def move_files_from_subfolders(path):
+def move_files_from_subfolders(path: str) -> list:
     
     file_paths = get_files_from_folder(path)
     moved_file = []
@@ -149,7 +152,7 @@ def move_files_from_subfolders(path):
 
 
 
-def remove_empty_folders(path):
+def remove_empty_folders(path: str):
     for root, dirs, files in os.walk(path, topdown=False):
         for dir_name in dirs:
             dir_path = os.path.join(root, dir_name)
@@ -161,7 +164,7 @@ def remove_empty_folders(path):
 
 
 
-def categorize_files (files_list):
+def categorize_files (files_list: list):
 
     category_files = {
         'images': [],
@@ -187,7 +190,7 @@ def categorize_files (files_list):
     return category_files, all_extensions, unknown_extensions
 
 
-def sorter(path_to_folder):
+def sorter(path_to_folder: str):
     
     file_paths = move_files_from_subfolders(path_to_folder)
     print(categorize_files(file_paths))
@@ -199,3 +202,14 @@ def sorter(path_to_folder):
             move_files(path)
             
     remove_empty_folders(path_to_folder)
+
+
+
+    if __name__ == '__main__':
+        if len(sys.argv) < 2:
+            print('You need to specify the folder name for sorting')
+            
+        
+        path_to_folder = sys.argv[1]
+
+        sorter(path_to_folder)
